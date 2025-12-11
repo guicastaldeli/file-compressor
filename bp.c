@@ -20,7 +20,7 @@ typedef struct {
 /**
  * Create
  */
-BytePairCompressor* create(int maxVocabSize) {
+BytePairCompressor* bpCreate(int maxVocabSize) {
     BytePairCompressor* comp = malloc(sizeof(BytePairCompressor));
     comp->pairs = malloc(sizeof(BytePair) * maxVocabSize);
     comp->pairCount = 0;
@@ -32,7 +32,7 @@ BytePairCompressor* create(int maxVocabSize) {
 /**
  * Destroy
  */
-void destroy(BytePairCompressor* comp) {
+void bpDestroy(BytePairCompressor* comp) {
     if(comp) {
         free(comp->pairs);
         free(comp->dict);
@@ -65,7 +65,7 @@ void countPairs(
 /**
  * Compress
  */
-uint8_t* compress(
+uint8_t* dpCompress(
     BytePairCompressor* comp,
     const uint8_t* data,
     size_t size,
@@ -111,7 +111,7 @@ uint8_t* compress(
 /**
  * Cecompress
  */
-uint8_t decompress(
+uint8_t bpDecompress(
     BytePairCompressor* comp,
     const uint8_t* data,
     size_t size,
@@ -119,7 +119,7 @@ uint8_t decompress(
 ) {
     uint8_t* outputBuffer = malloc(size * 2);
     size_t outIdx = 0;
-    
+
     for(size_t i = 0; i < size; i++) {
         if(data[i] == 0xFF && i + 1 < size) {
             uint8_t tokenIdx = data[++i];

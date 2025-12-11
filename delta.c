@@ -6,7 +6,7 @@
 /**
  * Compress
  */
-uint8_t* compress(
+uint8_t* deltaCompress(
     const uint8_t* data, 
     size_t size, 
     size_t* outputSize
@@ -31,7 +31,7 @@ uint8_t* compress(
 /**
  * Decompress
  */
-uint8_t* decompress(
+uint8_t* deltaDecompress(
     const uint8_t* data,
     size_t size,
     size_t* outputSize
