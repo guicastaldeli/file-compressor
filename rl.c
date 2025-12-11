@@ -5,6 +5,9 @@
 
 #define MAX_RUN_LENGTH 255
 
+/**
+ * Compress
+ */
 uint8_t* compress(
     const uint8_t* data,
     size_t size,
@@ -45,6 +48,41 @@ uint8_t* compress(
                 outputBuffer[outIdx++] = current;
             }
             i += runLength;
+        }
+    }
+
+    *outputSize = outIdx;
+    return outputBuffer;
+}
+
+/**
+ * Decompress
+ */
+uint8_t* decompress(
+    const uint8_t* data,
+    size_t size,
+    size_t* outputSize
+) {
+    if(size == 0) {
+        *outputSize = 0;
+        return NULL;
+    }
+
+    uint8_t* outputBuffer = malloc(size * 256);
+    size_t outIdx = 0;
+
+    size_t i = 0;
+    while(i < size) {
+        if(data[i] == 0xFF && i + 2 < size) {
+            uint8_t runLength = data[i+1];
+            uint8_t val = data[i+2];
+            for(int j = 0; j < runLength; j++) {
+                outputBuffer[outIdx++] = val;
+            }
+
+            i += 3;
+        } else {
+            outputBuffer[outIdx++] = data[i++];
         }
     }
 
