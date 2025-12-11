@@ -106,3 +106,52 @@ uint8_t* compress(
 /**
  * Decompress
  */
+uint8_t* decompress(
+    const uint8_t* data,
+    size_t size,
+    size_t* outputSize
+) {
+    uint8_t* outputBuffer = malloc(size * 10);
+    size_t outIdx = 0;
+
+    uint8_t window[WINDOW_SIZE] = {0};
+    int windowPos = 0;
+
+    size_t i = 0;
+    while(i < size) {
+        if(data[i] == 0xFE && i + 4 < size) {
+            uint16_t offset = (data[i+1] << 8) | data[i+2];
+            uint8_t length = data[i+3];
+            uint8_t nextChair = data[i+4];
+
+            for(int j = 0; j < length; j++) {
+                int srcPos = (windowPos - offset + j) % WINDOW_SIZE;
+                if(srcPos < 0) srcPos += WINDOW_SIZE;
+
+                outputBuffer[outIdx] = window[srcPos];
+                window[windowPos] = outputBuffer[outIdx];
+                windowPos = (windowPos + 1) % WINDOW_SIZE;
+                outIdx++;
+            }
+
+            if(nextChair != 0) {
+                outputBuffer[outIdx] = nextChair;
+                window[windowPos] = nextChair;
+                window[windowPos] = nextChair;
+                windowPos = (windowPos + 1) % WINDOW_SIZE;
+                outIdx++;
+            }
+
+            i += 5;
+        } else {
+            outputBuffer[outIdx] = data[i];
+            window[windowPos] = data[i];
+            windowPos = (windowPos + 1) % WINDOW_SIZE;
+            outIdx++;
+            i++;
+        }
+    }
+
+    *outputSize = outIdx;
+    return outputBuffer;
+}
