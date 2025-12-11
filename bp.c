@@ -65,7 +65,7 @@ void countPairs(
 /**
  * Compress
  */
-uint8_t* dpCompress(
+uint8_t* bpCompress(
     BytePairCompressor* comp,
     const uint8_t* data,
     size_t size,
