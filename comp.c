@@ -90,12 +90,13 @@ uint8_t* compress(
         case COMP_SW:
             compressed = swCompress(data, size, &compressedSize);
             break;
-        case COMP_BP:
+        case COMP_BP: {
             BytePairCompressor* comp = bpCreate(256);
             countPairs(comp, data, size);
             compressed = bpCompress(comp, data, size, &compressedSize);
             bpDestroy(comp);
             break;
+        }
         case COMP_NONE:
         default:
             compressed = malloc(size);
@@ -114,4 +115,35 @@ uint8_t* compress(
 
     *outputSize = compressedSize;
     return compressed;
+}
+
+/**
+ * Decompress
+ */
+uint8_t* decompress(
+    const uint8_t* data,
+    size_t size,
+    size_t* outputSize,
+    CompressionType compType
+) {
+    switch(compType) {
+        case COMP_RL:
+            return rlDecompress(data, size, outputSize);
+        case COMP_DELTA:
+            return deltaDecompress(data, size, outputSize);
+        case COMP_SW:
+            return swDecompress(data, size, outputSize);
+        case COMP_BP: {
+            BytePairCompressor* comp = bpCreate(256);
+            uint8_t* decompressed = bpDecompress(comp, data, size, outputSize);
+            bpDestroy(comp);
+            return decompressed;
+        }
+        case COMP_NONE:
+        default:
+            *outputSize = size;
+            uint8_t* output = malloc(size);
+            memcpy(output, data, size);
+            return output;
+    }
 }
