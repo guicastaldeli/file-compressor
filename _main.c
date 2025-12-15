@@ -1,19 +1,10 @@
+#include "_main.h"
+#include "comp.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 #include <time.h>
-#include "comp.c"
-
-#define COMP_MAGIC 0x434D5052
-
-typedef struct {
-    uint32_t magic;
-    uint16_t version;
-    uint8_t compType;
-    uint8_t reserved;
-    uint32_t originalSize
-} CompHeader;
 
 /**
  * Compress
@@ -91,10 +82,10 @@ int decompressFile(const char* inputPath, const char* outputPath) {
 
     size_t decompressedSize;
     uint8_t* decompressed = decompress(
-        compress,
+        compressed,
         compressedSize,
         &decompressedSize,
-        header.compType
+        (CompressionType)header.compType
     );
     if (decompressedSize != header.originalSize) {
         printf("Warning: Size mismatch! Expected %u, got %zu\n",

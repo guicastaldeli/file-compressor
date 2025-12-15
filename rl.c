@@ -1,9 +1,8 @@
+#include "rl.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-
-#define MAX_RUN_LENGTH 255
 
 /**
  * Compress

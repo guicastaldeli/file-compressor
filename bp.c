@@ -1,21 +1,8 @@
+#include "bp.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-
-typedef struct {
-    uint16_t pair[2];
-    uint16_t token;
-    int count;
-} BytePair;
-
-typedef struct {
-    BytePair* pairs;
-    int pairCount;
-    int maxPairs;
-    uint8_t* dict;
-    int dictSize;
-} BytePairCompressor;
 
 /**
  * Create
@@ -47,10 +34,11 @@ void countPairs(
 ) {
     int pairCounts[65536] = {0};
 
-    for(size_t i = 0; i < size; i++) {
+    for(size_t i = 0; i < size - 1; i++) {
         uint16_t pair = (data[i] << 8) | data[i+1];
         pairCounts[pair]++;
     }
+    
     for(int i = 0; i < 65536 && comp->pairCount < comp->maxPairs; i++) {
         if(pairCounts[i] > 10) {
             comp->pairs[comp->pairCount].pair[0] = i >> 8;
@@ -109,9 +97,9 @@ uint8_t* bpCompress(
 }
 
 /**
- * Cecompress
+ * Decompress
  */
-uint8_t bpDecompress(
+uint8_t* bpDecompress(
     BytePairCompressor* comp,
     const uint8_t* data,
     size_t size,
@@ -136,5 +124,5 @@ uint8_t bpDecompress(
     }
 
     *outputSize = outIdx;
-    return outputSize;
+    return outputBuffer;
 }

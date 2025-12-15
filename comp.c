@@ -1,20 +1,13 @@
-#include "bp.c"
-#include "rl.c"
-#include "sliding_window.c"
-#include "delta.c"
+#include "comp.h"
+#include "bp.h"
+#include "rl.h"
+#include "sliding_window.h"
+#include "delta.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 #include <ctype.h>
-
-typedef enum {
-    COMP_NONE = 0,
-    COMP_RL,
-    COMP_DELTA,
-    COMP_SW,
-    COMP_BP
-} CompressionType;
 
 CompressionType detectBestCompression(const uint8_t* data, size_t size) {
     if(size < 100) return COMP_NONE;

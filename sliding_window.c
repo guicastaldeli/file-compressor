@@ -1,16 +1,8 @@
+#include "sliding_window.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-
-#define WINDOW_SIZE 4096
-#define LOOKAHEAD_SIZE 18
-
-typedef struct {
-    uint16_t offset;
-    uint16_t length;
-    uint8_t next;
-} Match;
 
 Match findLongestMatch(
     const uint8_t* window,
